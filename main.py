@@ -24,6 +24,22 @@ def newOnes(ans):
         macs.append(r.sprintf("%Ether.src%"))
     return (ips,macs)
 
+def conf_yazdir(ans):
+    for s,r in ans:
+        config['IP-MAC'][r.sprintf("%ARP.psrc%")] = r.sprintf("%Ether.src%")  
+    with open('config.conf','w') as configfile:
+        config.write(configfile)
+
+def conf_ekle(str1,str2):
+    config['IP-MAC'][str1] = str2
+    with open('config.conf','w') as configfile:
+        config.write(configfile)
+
+def conf_remove(key):
+        with open('config.conf','w') as configfile:
+                s = config.remove_option('IP-MAC',key)
+                config.write(configfile)
+
 def sameornot(conf_keys,conf_values,new_ips,new_macs):
     for i in range(len(new_ips)):
 	for j in range(len(conf_keys)):
@@ -52,62 +68,26 @@ def sameornot(conf_keys,conf_values,new_ips,new_macs):
                         break
                     else:
                         continue
-                
-    
-    
-    
-def conf_yazdir(ans):
-    for s,r in ans:
-        config['IP-MAC'][r.sprintf("%ARP.psrc%")] = r.sprintf("%Ether.src%")  
-    with open('config.conf','w') as configfile:
-    	config.write(configfile)
-        
-def conf_ekle(str1,str2):
-    config['IP-MAC'][str1] = str2
-    with open('config.conf','w') as configfile:
-    	config.write(configfile)
-        
-def conf_remove(key):
-	with open('config.conf','w') as configfile:
-		s = config.remove_option('IP-MAC',key)
-		config.write(configfile)
 
-sbx=config['SETTINGS']['subnet']
-if(config['FIRST']['firsttime']=='0'):
-    config['FIRST']['firsttime']='1'
-    ans,unans=srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=sbx),timeout=2)
-    conf_yazdir(ans)
-    ip_list = listofKeys()
-    mac_list = listofValues()
-    
+def main():
+    snet=config['SETTINGS']['subnet']
+    if(config['FIRST']['firsttime']=='0'):
+        config['FIRST']['firsttime']='1'
+        with open('config.conf','w') as configfile:
+            config.write(configfile)
+        ans,unans=srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=snet),timeout=2)
+        conf_yazdir(ans)
+        ip_list = listofKeys()
+        mac_list = listofValues()
+    else:
+        ans,unans=srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=snet),timeout=2)
+        new_ips,new_macs = newOnes(ans)
+        conf_keys = listofKeys()
+        conf_values = listofValues()
+        #new_ips[0] = "192.168.42.1"
+        sameornot(conf_keys,conf_values,new_ips,new_macs)
 
-    for i in ip_list:
-        print "%s\n" %i
-    for j in mac_list:
-        print "%s\n" %j
-        
-else:
-    ans,unans=srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=sbx),timeout=2)
-    new_ips,new_macs = newOnes(ans)
-    
-    for i in new_ips:
-        print "%s\n" %i
-    for j in new_macs:
-        print "%s\n" %j
-        
-    conf_keys = listofKeys()
-    conf_values = listofValues()
-    #new_ips[0] = "192.168.42.1"
-    sameornot(conf_keys,conf_values,new_ips,new_macs)
-    
-
-
-
-    
-    
-
-    
-
+if __name__ == "__main__": main()
 
 
 
