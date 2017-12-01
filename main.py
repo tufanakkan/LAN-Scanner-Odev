@@ -24,15 +24,26 @@ def newOnes(ans):
         macs.append(r.sprintf("%Ether.src%"))
     return (ips,macs)
 
-def sameOrNot(conf_keys,conf_values,new_ips,new_macs):
-    for i in range (len(new_ips)):
-        for j in range (len(conf_keys)):
-            if( (new_ips[i]==conf_keys[j]) and (new_macs[i]==conf_values[j]) ):
-                break
-            elif( (new_ips[i]!=conf_keys[j]) and (new_macs[i]!=conf_values[j]) ):
-                choise = "a"
+def sameornot(conf_keys,conf_values,new_ips,new_macs):
+    for i in range(len(new_ips)):
+	for j in range(len(conf_keys)):
+	    if( (new_ips[i]==conf_keys[j]) and (new_macs[i]==conf_values[j]) ):
+		deger=0
+	    elif( (new_ips[i]!=conf_keys[j]) and (new_macs[i]!=conf_values[j]) ):
+		deger=1
+	    elif( (new_ips[i]!=conf_keys[j]) and (new_macs[i]==conf_values[j]) ):
+		deger=2
+	    if(deger==0):
+	        break
+            elif(deger==2):
+                print "UYARI! Aginizdaki " +new_macs[i]+ " mac adresine sahip cihaz yeni bir ip adresi ("+new_ips[i]+") aldi."
+		conf_remove(conf_keys[j])
+		conf_ekle(new_ips[i],new_macs[j])
+		break
+	    elif((deger==1) and (j == len(conf_keys)-1)):
                 new_mac=new_macs[i]
-                while (not(choise=="y" or choise=="Y" or choise=="n" or choise=="N") ):
+		choise = "a"
+		while (not(choise=="y" or choise=="Y" or choise=="n" or choise=="N") ):
                     choise = raw_input("Aginizda yeni bir mac adresi bulundu ( "+new_mac+" ) listeye eklemek ister misiniz?(y/n):")
                     if(choise=="y" or choise=="Y"):
                         conf_ekle(new_ips[i],new_macs[i])
@@ -41,11 +52,6 @@ def sameOrNot(conf_keys,conf_values,new_ips,new_macs):
                         break
                     else:
                         continue
-            elif( (new_ips[i]!=conf_keys[j]) and (new_macs[i]==conf_values[j]) ):
-                print "UYARI! Aginizdaki " +new_macs[i]+ " mac adresine sahip cihaz yeni bir ip adresi ("+new_ips[i]+") aldi."
-                conf_remove(conf_keys[j])
-                conf_ekle(new_ips[i],new_macs[j])
-                break
                 
     
     
@@ -75,18 +81,24 @@ if(config['FIRST']['firsttime']=='0'):
     mac_list = listofValues()
     
 
-    '''for i in ip_list:
+    for i in ip_list:
         print "%s\n" %i
     for j in mac_list:
-        print "%s\n" %j'''
+        print "%s\n" %j
         
 else:
     ans,unans=srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=sbx),timeout=2)
     new_ips,new_macs = newOnes(ans)
+    
+    for i in new_ips:
+        print "%s\n" %i
+    for j in new_macs:
+        print "%s\n" %j
+        
     conf_keys = listofKeys()
     conf_values = listofValues()
     #new_ips[0] = "192.168.42.1"
-    sameOrNot(conf_keys,conf_values,new_ips,new_macs)
+    sameornot(conf_keys,conf_values,new_ips,new_macs)
     
 
 
