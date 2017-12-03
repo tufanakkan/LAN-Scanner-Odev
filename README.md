@@ -1,11 +1,11 @@
 # LAN-Scanner-Odev
 
-##Gerekli Kütüphaneler
+## Gerekli Kütüphaneler
 
 scapy
 configparser
 
-##Gerekli Kütüphanelerin Kurulumu
+## Gerekli Kütüphanelerin Kurulumu
 
 "scapy" için:
 
@@ -19,7 +19,7 @@ pip install scapy
 pip install configparser
 ```
 
-##Programı Nasıl Çalıştırırım?
+## Programı Nasıl Çalıştırırım?
 
 Programın olduğu dizinde root yetkilerine sahip olarak şu şekilde çalıştırabiliriz:
 
