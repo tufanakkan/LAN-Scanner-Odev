@@ -84,7 +84,6 @@ def main():
         new_ips,new_macs = newOnes(ans)
         conf_keys = listofKeys()
         conf_values = listofValues()
-        #new_ips[0] = "192.168.42.1"
         sameornot(conf_keys,conf_values,new_ips,new_macs)
 
 if __name__ == "__main__": main()
